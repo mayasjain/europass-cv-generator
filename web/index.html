@@ -20,7 +20,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
+      background: linear-gradient(145deg, #eef2ff 0%, #f0f4ff 50%, #e8effe 100%);
+      background-attachment: fixed;
       color: var(--text);
       min-height: 100vh;
     }
@@ -340,7 +341,7 @@
   <div class="steps-section">
     <div class="steps-header">
       <h2>How it works</h2>
-      <p>Three simple steps — takes about 60 seconds.</p>
+      <p>Three simple steps. Takes about 60 seconds.</p>
     </div>
 
     <div class="steps">
@@ -368,7 +369,7 @@
         <div class="step-number">2</div>
         <div class="step-icon">⚙️</div>
         <h3>We process it</h3>
-        <p>Our pipeline parses, cleans, and rewrites your CV using AI — then compiles it to LaTeX.</p>
+        <p>Our pipeline parses, cleans, and rewrites your CV using AI, then compiles it to LaTeX.</p>
         <div id="status" hidden>
           <div class="status-box" id="status-box">
             <span class="spinner" id="spinner"></span>
@@ -469,9 +470,7 @@
         // Mark step 2 done, activate step 3
         step2.classList.remove("active");
         step2.classList.add("done");
-        spinner.hidden = true;
-        statusBox.className = "status-box success";
-        statusMsg.textContent = "Done! Your CV is ready.";
+        statusEl.hidden = true;
 
         dlPdf.href = `/download/${job_id}/pdf`;
         dlZip.href = `/download/${job_id}/zip`;
