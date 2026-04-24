@@ -1,0 +1,112 @@
+% =============================================================
+% CV template — rendered by cv generator (Jinja2 + resume.cls)
+% Do not edit the rendered .tex output directly; edit the
+% template or the source data instead.
+% =============================================================
+
+\documentclass{resume}
+
+\usepackage[left=0.4in, top=0.3in, right=0.4in, bottom=0.3in]{geometry}
+
+{% raw %}\newcommand{\tab}[1]{\hspace{.2667\textwidth}\rlap{#1}}
+\newcommand{\itab}[1]{\hspace{0em}\rlap{#1}}{% endraw %}
+
+% ---------- Header ----------
+\name{ {{ cv.personal.full_name|latex }} }
+{% if cv.personal.address %}
+\address{ {{ cv.personal.address|latex }} }
+{% endif %}
+\address{
+  {%- set contact_parts = [] %}
+  {%- if cv.personal.phone %}{% set _ = contact_parts.append(cv.personal.phone|latex) %}{% endif %}
+  {%- if cv.personal.email %}{% set _ = contact_parts.append(cv.personal.email|latex) %}{% endif %}
+  {%- if cv.personal.linkedin %}{% set _ = contact_parts.append(cv.personal.linkedin|latex) %}{% endif %}
+  {%- if cv.personal.website %}{% set _ = contact_parts.append(cv.personal.website|latex) %}{% endif %}
+  {{ contact_parts | join(' \\\\ ') }}
+}
+
+\begin{document}
+
+{% if cv.education %}
+% ---------- Education ----------
+\begin{rSection}{Education}
+{% for edu in cv.education %}
+  {\bf {{ edu.institution|latex }} } \hfill {{ date_range(edu.start_date, edu.end_date) }}\\
+  {{ edu.degree|latex }}
+  {%- if edu.location %} \hfill {{ edu.location|latex }}{% endif %}
+  {%- if edu.description %}\\
+  {{ edu.description|latex }}
+  {% endif %}
+
+{% endfor %}
+\end{rSection}
+{% endif %}
+{% if cv.work_experience %}
+% ---------- Work Experience ----------
+\begin{rSection}{Experience}
+{% for job in cv.work_experience %}
+\begin{rSubsection}
+  { {{ job.employer|latex }} }
+  { {{ date_range(job.start_date, job.end_date) }} }
+  { {{ job.job_title|latex }} }
+  { {{ job.location|latex }} }
+{% for bullet in job.description %}
+\item {{ bullet|latex }}
+{% endfor %}
+\end{rSubsection}
+{% endfor %}
+\end{rSection}
+{% endif %}
+{% if cv.projects %}
+% ---------- Projects ----------
+\begin{rSection}{Projects}
+{% for project in cv.projects %}
+\begin{rSubsection}
+  { {{ project.title|latex }} }
+  { {{ date_range(project.start_date, project.end_date) }} }
+  { {{ project.role|latex }} }
+  { {{ project.location|latex }} }
+{% for bullet in project.description %}
+\item {{ bullet|latex }}
+{% endfor %}
+\end{rSubsection}
+{% endfor %}
+\end{rSection}
+{% endif %}
+{% if cv.extracurriculars %}
+% ---------- Extracurricular Engagement ----------
+\begin{rSection}{Extracurricular Engagement}
+{% for extra in cv.extracurriculars %}
+\begin{rSubsection}
+  { {{ extra.organisation|latex }} }
+  { {{ date_range(extra.start_date, extra.end_date) }} }
+  { {{ extra.role|latex }} }
+  { {{ extra.location|latex }} }
+{% for bullet in extra.description %}
+\item {{ bullet|latex }}
+{% endfor %}
+\end{rSubsection}
+{% endfor %}
+\end{rSection}
+{% endif %}
+{% set has_skills = cv.skills | length > 0 %}
+{% set has_languages = cv.languages | length > 0 %}
+{% set has_interests = cv.interests | length > 0 %}
+{% if has_skills or has_languages or has_interests %}
+% ---------- Skills & Interests ----------
+\begin{rSection}{Skills and Interests}
+\begin{tabular}{ @{} >{\bfseries}l @{\hspace{4ex}} l }
+{% for skill_group in cv.skills %}
+{{ skill_group.category|latex }} & {{ skill_group.items | map('latex') | join(', ') }} \\
+{% endfor %}
+{% if has_languages %}
+Languages & {% for lang in cv.languages %}{{ lang.name|latex }}: {{ lang.level|latex }}{% if not loop.last %}, {% endif %}{% endfor %} \\
+{% endif %}
+{% if has_interests %}
+Interests & {{ cv.interests | map('latex') | join(', ') }} \\
+{% endif %}
+\end{tabular}
+\end{rSection}
+{% endif %}
+
+\end{document}

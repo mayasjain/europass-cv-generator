@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Europass CV Generator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1a1a1a;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .upload-area {
+      border: 2px dashed #d0d0d0;
+      border-radius: 8px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .upload-area:hover { border-color: #4a6cf7; }
+    .upload-area.has-file { border-color: #4a6cf7; background: #f0f3ff; }
+
+    .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    .upload-label {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .upload-label span { color: #4a6cf7; font-weight: 600; cursor: pointer; }
+
+    #file-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    #file-name {
+      font-size: 0.85rem;
+      color: #4a6cf7;
+      margin-top: 6px;
+      min-height: 1.2em;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 13px;
+      background: #4a6cf7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    button[type="submit"]:hover:not(:disabled) { background: #3a5ce5; }
+    button[type="submit"]:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    #status {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid #d0d0d0;
+      border-top-color: #4a6cf7;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #status-message { font-size: 0.9rem; color: #555; }
+    #status-message.error { color: #d32f2f; }
+
+    #results {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dl-btn {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .dl-pdf {
+      background: #4a6cf7;
+      color: #fff;
+    }
+
+    .dl-pdf:hover { background: #3a5ce5; }
+
+    .dl-zip {
+      background: #f0f3ff;
+      color: #4a6cf7;
+      border: 1.5px solid #c5d0fa;
+    }
+
+    .dl-zip:hover { background: #e2e8ff; }
+
+    .dl-note {
+      font-size: 0.78rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Europass CV Generator</h1>
+    <p class="subtitle">Upload your Europass CV PDF and get a polished LaTeX CV — ready to compile or edit on Overleaf.</p>
+
+    <form id="upload-form">
+      <div class="upload-area" id="drop-area">
+        <input type="file" id="file-input" accept=".pdf" required />
+        <div class="upload-icon">📄</div>
+        <p class="upload-label">Drop your PDF here or <span>browse</span></p>
+        <p id="file-name"></p>
+      </div>
+      <button type="submit" id="submit-btn">Generate CV</button>
+    </form>
+
+    <div id="status" hidden>
+      <span class="spinner" id="spinner"></span>
+      <span id="status-message">Processing your CV — this may take up to 60 seconds...</span>
+    </div>
+
+    <div id="results" hidden>
+      <a class="dl-btn dl-pdf" id="dl-pdf" href="#">Download PDF</a>
+      <a class="dl-btn dl-zip" id="dl-zip" href="#">Download Overleaf ZIP</a>
+      <p class="dl-note">The ZIP contains output.tex + resume.cls — upload it directly to Overleaf to edit.</p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("upload-form");
+    const fileInput = document.getElementById("file-input");
+    const fileName = document.getElementById("file-name");
+    const submitBtn = document.getElementById("submit-btn");
+    const status = document.getElementById("status");
+    const statusMsg = document.getElementById("status-message");
+    const spinner = document.getElementById("spinner");
+    const results = document.getElementById("results");
+    const dlPdf = document.getElementById("dl-pdf");
+    const dlZip = document.getElementById("dl-zip");
+    const dropArea = document.getElementById("drop-area");
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) {
+        fileName.textContent = fileInput.files[0].name;
+        dropArea.classList.add("has-file");
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!fileInput.files[0]) return;
+
+      submitBtn.disabled = true;
+      results.hidden = true;
+      statusMsg.className = "";
+      statusMsg.textContent = "Processing your CV — this may take up to 60 seconds...";
+      spinner.hidden = false;
+      status.hidden = false;
+
+      const data = new FormData();
+      data.append("file", fileInput.files[0]);
+
+      try {
+        const res = await fetch("/process", { method: "POST", body: data });
+        if (!res.ok) {
+          const err = await res.text();
+          spinner.hidden = true;
+          statusMsg.className = "error";
+          statusMsg.textContent = "Error: " + err;
+          submitBtn.disabled = false;
+          return;
+        }
+        const { job_id } = await res.json();
+        dlPdf.href = `/download/${job_id}/pdf`;
+        dlZip.href = `/download/${job_id}/zip`;
+        status.hidden = true;
+        results.hidden = false;
+        submitBtn.disabled = false;
+      } catch (err) {
+        spinner.hidden = true;
+        statusMsg.className = "error";
+        statusMsg.textContent = "Network error: " + err.message;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
