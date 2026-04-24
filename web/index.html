@@ -7,59 +7,180 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --blue: #4a6cf7;
+      --blue-dark: #3a5ce5;
+      --blue-light: #eef1fe;
+      --text: #1a1a2e;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #f9fafb;
+      --white: #ffffff;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 64px 24px 56px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .hero h1 span {
+      color: var(--blue);
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Steps layout ── */
+    .steps-section {
+      max-width: 860px;
+      margin: 56px auto;
+      padding: 0 24px;
+    }
+
+    .steps-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .steps-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .steps-header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: start;
+      gap: 0;
+    }
+
+    .step {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: box-shadow 0.2s;
+    }
+
+    .step.active {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
+    }
+
+    .step.done {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.08);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 0.85rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #1a1a1a;
+      margin: 0 auto 16px;
+      transition: background 0.2s, color 0.2s;
     }
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-      padding: 48px 40px;
-      width: 100%;
-      max-width: 480px;
+    .step.active .step-number {
+      background: var(--blue);
+      color: var(--white);
     }
 
-    h1 {
-      font-size: 1.5rem;
+    .step.done .step-number {
+      background: #10b981;
+      color: var(--white);
+    }
+
+    .step-icon {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+
+    .step h3 {
+      font-size: 0.95rem;
       font-weight: 700;
       margin-bottom: 6px;
     }
 
-    .subtitle {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 32px;
+    .step p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
     }
 
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      margin-top: 52px;
+      color: #d1d5db;
+      font-size: 1.2rem;
+    }
+
+    /* ── Step 1: Upload ── */
     .upload-area {
-      border: 2px dashed #d0d0d0;
-      border-radius: 8px;
-      padding: 32px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s;
-      margin-bottom: 20px;
       position: relative;
+      border: 2px dashed #d1d5db;
+      border-radius: 8px;
+      padding: 20px 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-top: 16px;
     }
 
-    .upload-area:hover { border-color: #4a6cf7; }
-    .upload-area.has-file { border-color: #4a6cf7; background: #f0f3ff; }
-
-    .upload-icon { font-size: 2rem; margin-bottom: 8px; }
-
-    .upload-label {
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    .upload-label span { color: #4a6cf7; font-weight: 600; cursor: pointer; }
+    .upload-area:hover { border-color: var(--blue); background: var(--blue-light); }
+    .upload-area.has-file { border-color: var(--blue); background: var(--blue-light); border-style: solid; }
 
     #file-input {
       position: absolute;
@@ -70,133 +191,243 @@
       height: 100%;
     }
 
-    #file-name {
-      font-size: 0.85rem;
-      color: #4a6cf7;
-      margin-top: 6px;
-      min-height: 1.2em;
+    .upload-area .upload-cta {
+      font-size: 0.78rem;
+      color: var(--muted);
     }
 
-    button[type="submit"] {
+    .upload-area .upload-cta span {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    #file-name {
+      font-size: 0.75rem;
+      color: var(--blue);
+      margin-top: 6px;
+      min-height: 1em;
+      word-break: break-all;
+    }
+
+    /* ── Step 2: Process ── */
+    #submit-btn {
       width: 100%;
-      padding: 13px;
-      background: #4a6cf7;
-      color: #fff;
+      margin-top: 16px;
+      padding: 11px;
+      background: var(--blue);
+      color: var(--white);
       border: none;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s, opacity 0.2s;
     }
 
-    button[type="submit"]:hover:not(:disabled) { background: #3a5ce5; }
-    button[type="submit"]:disabled { opacity: 0.55; cursor: not-allowed; }
+    #submit-btn:hover:not(:disabled) { background: var(--blue-dark); }
+    #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    #status {
-      margin-top: 24px;
-      text-align: center;
+    .status-box {
+      margin-top: 16px;
+      padding: 12px;
+      background: var(--blue-light);
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: var(--blue);
+      line-height: 1.5;
+    }
+
+    .status-box.error {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .status-box.success {
+      background: #f0fdf4;
+      color: #16a34a;
     }
 
     .spinner {
       display: inline-block;
-      width: 20px; height: 20px;
-      border: 2px solid #d0d0d0;
-      border-top-color: #4a6cf7;
+      width: 12px; height: 12px;
+      border: 2px solid rgba(74,108,247,0.3);
+      border-top-color: var(--blue);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      margin-right: 8px;
+      margin-right: 6px;
       vertical-align: middle;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    #status-message { font-size: 0.9rem; color: #555; }
-    #status-message.error { color: #d32f2f; }
-
-    #results {
-      margin-top: 24px;
+    /* ── Step 3: Download ── */
+    .dl-buttons {
+      margin-top: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .dl-btn {
       display: block;
       text-align: center;
-      padding: 12px;
+      padding: 10px 12px;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       font-weight: 600;
       text-decoration: none;
       transition: background 0.2s;
     }
 
     .dl-pdf {
-      background: #4a6cf7;
-      color: #fff;
+      background: var(--blue);
+      color: var(--white);
     }
 
-    .dl-pdf:hover { background: #3a5ce5; }
+    .dl-pdf:hover { background: var(--blue-dark); }
 
     .dl-zip {
-      background: #f0f3ff;
-      color: #4a6cf7;
-      border: 1.5px solid #c5d0fa;
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid #c7d2fe;
     }
 
-    .dl-zip:hover { background: #e2e8ff; }
+    .dl-zip:hover { background: #e0e7ff; }
 
     .dl-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .step-placeholder {
       font-size: 0.78rem;
-      color: #888;
+      color: #d1d5db;
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    /* ── Footer ── */
+    footer {
       text-align: center;
+      padding: 32px 24px;
+      font-size: 0.78rem;
+      color: #9ca3af;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .steps {
+        grid-template-columns: 1fr;
+      }
+      .step-arrow { display: none; }
+      .steps-section { margin: 32px auto; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Europass CV Generator</h1>
-    <p class="subtitle">Upload your Europass CV PDF and get a polished LaTeX CV — ready to compile or edit on Overleaf.</p>
 
-    <form id="upload-form">
-      <div class="upload-area" id="drop-area">
-        <input type="file" id="file-input" accept=".pdf" required />
-        <div class="upload-icon">📄</div>
-        <p class="upload-label">Drop your PDF here or <span>browse</span></p>
-        <p id="file-name"></p>
-      </div>
-      <button type="submit" id="submit-btn">Generate CV</button>
-    </form>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">Free &amp; Open Source</div>
+    <h1>Turn your Europass CV<br>into an <span>Overleaf-ready</span> CV</h1>
+    <p>Upload your Europass PDF. We extract, rewrite, and render it into a clean LaTeX CV — ready to download or edit on Overleaf.</p>
+  </div>
 
-    <div id="status" hidden>
-      <span class="spinner" id="spinner"></span>
-      <span id="status-message">Processing your CV — this may take up to 60 seconds...</span>
+  <!-- Steps -->
+  <div class="steps-section">
+    <div class="steps-header">
+      <h2>How it works</h2>
+      <p>Three simple steps — takes about 60 seconds.</p>
     </div>
 
-    <div id="results" hidden>
-      <a class="dl-btn dl-pdf" id="dl-pdf" href="#">Download PDF</a>
-      <a class="dl-btn dl-zip" id="dl-zip" href="#">Download Overleaf ZIP</a>
-      <p class="dl-note">The ZIP contains output.tex + resume.cls — upload it directly to Overleaf to edit.</p>
+    <div class="steps">
+
+      <!-- Step 1: Upload -->
+      <div class="step active" id="step-1">
+        <div class="step-number">1</div>
+        <div class="step-icon">📄</div>
+        <h3>Upload your CV</h3>
+        <p>Select your Europass CV as a PDF file.</p>
+        <form id="upload-form">
+          <div class="upload-area" id="drop-area">
+            <input type="file" id="file-input" accept=".pdf" required />
+            <p class="upload-cta">Drop PDF here or <span>browse</span></p>
+            <p id="file-name"></p>
+          </div>
+          <button type="submit" id="submit-btn">Generate CV →</button>
+        </form>
+      </div>
+
+      <div class="step-arrow">›</div>
+
+      <!-- Step 2: Process -->
+      <div class="step" id="step-2">
+        <div class="step-number">2</div>
+        <div class="step-icon">⚙️</div>
+        <h3>We process it</h3>
+        <p>Our pipeline parses, cleans, and rewrites your CV using AI — then compiles it to LaTeX.</p>
+        <div id="status" hidden>
+          <div class="status-box" id="status-box">
+            <span class="spinner" id="spinner"></span>
+            <span id="status-message">Processing — up to 60 seconds...</span>
+          </div>
+        </div>
+        <p class="step-placeholder" id="step2-placeholder">Waiting for your upload...</p>
+      </div>
+
+      <div class="step-arrow">›</div>
+
+      <!-- Step 3: Download -->
+      <div class="step" id="step-3">
+        <div class="step-number">3</div>
+        <div class="step-icon">⬇️</div>
+        <h3>Download your CV</h3>
+        <p>Get a compiled PDF or a ZIP to upload straight to Overleaf.</p>
+        <div id="results" hidden>
+          <div class="dl-buttons">
+            <a class="dl-btn dl-pdf" id="dl-pdf" href="#">Download PDF</a>
+            <a class="dl-btn dl-zip" id="dl-zip" href="#">Download Overleaf ZIP</a>
+          </div>
+          <p class="dl-note">The ZIP contains <code>output.tex</code> + <code>resume.cls</code> — drag it into Overleaf to edit.</p>
+        </div>
+        <p class="step-placeholder" id="step3-placeholder">Ready after processing...</p>
+      </div>
+
     </div>
   </div>
 
+  <footer>
+    Built with Python · FastAPI · LaTeX · Gemini via OpenRouter
+  </footer>
+
   <script>
-    const form = document.getElementById("upload-form");
-    const fileInput = document.getElementById("file-input");
-    const fileName = document.getElementById("file-name");
-    const submitBtn = document.getElementById("submit-btn");
-    const status = document.getElementById("status");
-    const statusMsg = document.getElementById("status-message");
-    const spinner = document.getElementById("spinner");
-    const results = document.getElementById("results");
-    const dlPdf = document.getElementById("dl-pdf");
-    const dlZip = document.getElementById("dl-zip");
-    const dropArea = document.getElementById("drop-area");
+    const form        = document.getElementById("upload-form");
+    const fileInput   = document.getElementById("file-input");
+    const fileNameEl  = document.getElementById("file-name");
+    const submitBtn   = document.getElementById("submit-btn");
+    const dropArea    = document.getElementById("drop-area");
+
+    const step1       = document.getElementById("step-1");
+    const step2       = document.getElementById("step-2");
+    const step3       = document.getElementById("step-3");
+
+    const statusEl    = document.getElementById("status");
+    const statusBox   = document.getElementById("status-box");
+    const statusMsg   = document.getElementById("status-message");
+    const spinner     = document.getElementById("spinner");
+    const step2ph     = document.getElementById("step2-placeholder");
+    const step3ph     = document.getElementById("step3-placeholder");
+
+    const results     = document.getElementById("results");
+    const dlPdf       = document.getElementById("dl-pdf");
+    const dlZip       = document.getElementById("dl-zip");
 
     fileInput.addEventListener("change", () => {
       if (fileInput.files[0]) {
-        fileName.textContent = fileInput.files[0].name;
+        fileNameEl.textContent = fileInput.files[0].name;
         dropArea.classList.add("has-file");
       }
     });
@@ -205,36 +436,56 @@
       e.preventDefault();
       if (!fileInput.files[0]) return;
 
+      // Activate step 2
+      step1.classList.remove("active");
+      step2.classList.add("active");
       submitBtn.disabled = true;
       results.hidden = true;
-      statusMsg.className = "";
-      statusMsg.textContent = "Processing your CV — this may take up to 60 seconds...";
+      step2ph.hidden = true;
+      step3ph.hidden = false;
+      statusBox.className = "status-box";
+      statusMsg.textContent = "Processing — up to 60 seconds...";
       spinner.hidden = false;
-      status.hidden = false;
+      statusEl.hidden = false;
 
       const data = new FormData();
       data.append("file", fileInput.files[0]);
 
       try {
         const res = await fetch("/process", { method: "POST", body: data });
+
         if (!res.ok) {
           const err = await res.text();
           spinner.hidden = true;
-          statusMsg.className = "error";
+          statusBox.className = "status-box error";
           statusMsg.textContent = "Error: " + err;
+          step2.classList.remove("active");
           submitBtn.disabled = false;
           return;
         }
+
         const { job_id } = await res.json();
+
+        // Mark step 2 done, activate step 3
+        step2.classList.remove("active");
+        step2.classList.add("done");
+        spinner.hidden = true;
+        statusBox.className = "status-box success";
+        statusMsg.textContent = "Done! Your CV is ready.";
+
         dlPdf.href = `/download/${job_id}/pdf`;
         dlZip.href = `/download/${job_id}/zip`;
-        status.hidden = true;
+        step3ph.hidden = true;
         results.hidden = false;
+        step3.classList.add("done");
+
         submitBtn.disabled = false;
+
       } catch (err) {
         spinner.hidden = true;
-        statusMsg.className = "error";
+        statusBox.className = "status-box error";
         statusMsg.textContent = "Network error: " + err.message;
+        step2.classList.remove("active");
         submitBtn.disabled = false;
       }
     });
